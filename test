@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Celebrations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+            color: #333;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #0077b6;
+        }
+
+        .birthday-message {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        .name {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ff6f61;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 Happy Birthday 🎉</h1>
+    <div class="birthday-message">
+        <p>We wish a fantastic day to:</p>
+        <div id="birthday-name" class="name"></div>
+    </div>
+
+    <script>
+        // Path to the CSV file hosted online
+        const CSV_URL = 'YOUR_CSV_FILE_URL'; // Replace with actual URL of your CSV file.
+
+        // Function to fetch and process CSV
+        async function fetchBirthdays() {
+            const today = new Date();
+            const todayFormatted = (today.getMonth() + 1).toString().padStart(2, '0') + '/' + today.getDate().toString().padStart(2, '0');
+
+            try {
+                const response = await fetch(CSV_URL);
+                const data = await response.text();
+                const rows = data.split('\n').slice(1); // Skip the header row
+                
+                let birthdayNames = '';
+
+                rows.forEach(row => {
+                    const [name, date] = row.split(','); // Assuming format: Name, mm/dd
+                    if (date.trim() === todayFormatted) {
+                        birthdayNames += `<p>${name.trim()}</p>`;
+                    }
+                });
+
+                document.getElementById('birthday-name').innerHTML = birthdayNames || 'No birthdays today!';
+            } catch (error) {
+                console.error('Error fetching the CSV:', error);
+                document.getElementById('birthday-name').innerHTML = 'Unable to load birthdays.';
+            }
+        }
+
+        fetchBirthdays();
+    </script>
+</body>
+</html>
